@@ -3,54 +3,52 @@ import React, { Component } from "react";
 class AddCohort extends Component {
   state = {
     cohortName: "",
-    startDate: "",
-    today: {},
-    ninetyDays: {},
-    dates: []
+    next90: [],
+    selected: ""
   };
   addCohort = () => {
-    console.log("Submitting...", ...this.state);
+    console.log("subitting...", this.state);
     this.props.toggleVisibility();
   };
-  getDates = (date, newDates) => {
-    if (date < this.state.ninetyDays) {
-      let nextDay = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate() + 1
-      );
-      newDates.push(nextDay);
-      return this.getDates(nextDay, newDates);
+  nthDay = (n, initialDay) => {
+    let day = initialDay || new Date();
+    return new Date(day.getFullYear(), day.getMonth(), day.getDate() + n);
+  };
+  getNext90 = (arr, cur) => {
+    arr = arr || [];
+    cur = cur || new Date();
+    if (cur < this.nthDay(90)) {
+      arr.push(cur);
+      return this.getNext90(arr, this.nthDay(1, cur));
     }
-    return newDates;
+
+    this.setState({ next90: arr });
+  };
+  handleChange = target => {
+    this.setState({ [target.name]: target.value });
   };
   componentDidMount() {
-    let today = new Date();
-    let ninetyDays = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() + 90
-    );
-    this.getDates(today, []);
-    this.setState({
-      ninetyDays: ninetyDays,
-      today: today
-    });
+    this.getNext90();
   }
   render() {
-    console.log(this.state.dates);
-    const mappedDates = this.state.dates.map(e => {
-      console.log(e);
-      return <option key={e} value={("" + e).slice(0, 10)} />;
+    let mapped90 = this.state.next90.map(e => {
+      return (
+        <option value={e + ""} key={e}>
+          {(e + "").slice(0, 10)}
+        </option>
+      );
     });
     return (
       <div className="addcohort-container">
         <h2>ADD COHORT</h2>
         <input
           placeholder="Cohort"
-          onChange={e => this.setState({ cohortName: e.target.name })}
+          name="cohortName"
+          onChange={e => this.handleChange(e.target)}
         />
-        <select>{mappedDates}</select>
+        <select name="selected" onChange={e => this.handleChange(e.target)}>
+          {mapped90}
+        </select>
         <button onClick={() => this.addCohort()}>ADD</button>
       </div>
     );
