@@ -7,13 +7,14 @@ class AddCohort extends Component {
     selected: ""
   };
   addCohort = () => {
-    console.log("subitting...", this.state);
     this.props.toggleVisibility();
   };
+
   nthDay = (n, initialDay) => {
     let day = initialDay || new Date();
     return new Date(day.getFullYear(), day.getMonth(), day.getDate() + n);
   };
+
   getNext90 = (arr, cur) => {
     arr = arr || [];
     cur = cur || new Date();
@@ -24,20 +25,26 @@ class AddCohort extends Component {
 
     this.setState({ next90: arr });
   };
+
   handleChange = target => {
     this.setState({ [target.name]: target.value });
   };
+
   componentDidMount() {
     this.getNext90();
   }
+
   render() {
-    let mapped90 = this.state.next90.map(e => {
+    const { next90 } = this.state;
+
+    let mapped90 = next90.map(e => {
       return (
         <option value={e + ""} key={e}>
           {(e + "").slice(0, 10)}
         </option>
       );
     });
+
     return (
       <div className="addcohort-container">
         <h2>ADD COHORT</h2>
@@ -49,7 +56,7 @@ class AddCohort extends Component {
         <select name="selected" onChange={e => this.handleChange(e.target)}>
           {mapped90}
         </select>
-        <button onClick={() => this.addCohort()}>ADD</button>
+        <button onClick={this.addCohort}>ADD</button>
       </div>
     );
   }
