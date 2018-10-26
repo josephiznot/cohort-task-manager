@@ -5,23 +5,29 @@ import AddCohort from "./components/AddCohort";
 
 class App extends Component {
   state = {
-    cohortVisible: false
+    cohortVisible: false,
   };
+
   toggleVisibility = () => {
     this.setState({ cohortVisible: !this.state.cohortVisible });
   };
+
   render() {
+    const { cohortVisible } = this.state;
+
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Cohort Task Manager</h1>
         </header>
-        {this.state.cohortVisible ? (
-          <AddCohort toggleVisibility={this.toggleVisibility} />
-        ) : (
-          <button onClick={this.toggleVisibility}>Add Cohort</button>
-        )}
+
+        {
+          cohortVisible
+          ? <AddCohort toggleVisibility={this.toggleVisibility} />
+          : <button onClick={this.toggleVisibility}>Add Cohort</button>
+        }
+
       </div>
     );
   }
